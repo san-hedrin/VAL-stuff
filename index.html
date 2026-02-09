@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Valentine 💖</title>
+  <meta name="description" content="A small website 💕" />
+
+  <!-- Social preview -->
+  <meta property="og:title" content="My Valentine 💖" />
+  <meta property="og:description" content="❤️ Will you be my Valentine?" />
+  <meta property="og:type" content="website" />
+
   <style>
     body {
       margin: 0;
@@ -21,21 +28,20 @@
       background: rgba(0, 0, 0, 0.25);
       padding: 40px;
       border-radius: 20px;
-      max-width: 500px;
+      max-width: 520px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 2s ease;
+      animation: fadeIn 1.5s ease;
+      position: relative;
     }
 
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
+    h1 { font-size: 2.5em; margin-bottom: 10px; }
+    h2 { margin-top: 20px; }
 
     p {
       font-size: 1.1em;
       line-height: 1.6;
-      margin-bottom: 30px;
+      min-height: 90px;
     }
 
     .buttons {
@@ -43,6 +49,7 @@
       justify-content: center;
       gap: 20px;
       flex-wrap: wrap;
+      margin-top: 25px;
     }
 
     button {
@@ -55,114 +62,168 @@
     }
 
     button:hover {
-      transform: scale(1.05);
+      transform: scale(1.08);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     }
 
-    .yes {
-      background: #ff2f92;
-      color: white;
-    }
+    .yes { background: #ff2f92; color: white; }
+    .no { background: white; color: #ff2f92; }
 
-    .no {
-      background: white;
-      color: #ff2f92;
-    }
+    .hidden { display: none; }
 
-    .hidden {
-      display: none;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hearts span {
+    .music {
       position: absolute;
-      bottom: -50px;
-      font-size: 20px;
-      animation: float 6s infinite ease-in;
+      top: 15px;
+      right: 20px;
+      font-size: 0.9em;
+      cursor: pointer;
+      opacity: 0.9;
+    }
+
+    .hearts span, .confetti span {
+      position: absolute;
+      bottom: -40px;
+      animation: float 6s linear forwards;
     }
 
     @keyframes float {
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(-120vh); opacity: 0; }
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .countdown {
+      margin-top: 15px;
+      font-size: 0.95em;
+      opacity: 0.85;
+    }
   </style>
 </head>
 <body>
 
   <div class="card" id="mainCard">
+    <div class="music" onclick="toggleMusic()">🎵 music</div>
+
     <h1>Hey my love ❤️</h1>
-    <p>
-      From the moment you came into my life, everything became brighter.
-      You make me smile in ways I didn’t know were possible, and my days are better just because you’re in them.
-      I don’t need a perfect world — I just need you in mine.
-    </p>
+    <p id="typedText"></p>
 
     <h2>Will you be my Valentine? 💕</h2>
 
     <div class="buttons">
-      <button class="yes" onclick="sayYes()">Yes 💖</button>
-      <button class="no" onclick="moveNo()">No 🙈</button>
+      <button class="yes" id="yesBtn" onclick="sayYes()">Yes 💖</button>
+      <button class="no" id="noBtn" onclick="moveNo(event)">No 🙈</button>
     </div>
+
+    <div class="countdown" id="countdown"></div>
   </div>
 
   <div class="card hidden" id="yesCard">
-    <h1>She said YES!!! 💘</h1>
+    <h1>YES!!! 💘</h1>
     <p>
-      You’ve just made me the happiest person alive.
-      I promise to keep choosing you, making you laugh, and loving you more every single day.
+      I LOVE YOU💕💕💕.
     </p>
-    <h2>Happy Valentine’s Day, my love 🌹</h2>
+    <h2>Happy Valentine’s Day,🌹</h2>
   </div>
 
   <div class="hearts" id="hearts"></div>
+  <div class="confetti" id="confetti"></div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9b5b94c7b6.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
+    /* Typing effect */
+    const message = "As the tech nerd I am, it is my obligation to make this😂😂😂
+      soooo......
+";
+    let index = 0;
+    function typeText() {
+      if (index < message.length) {
+        document.getElementById('typedText').textContent += message.charAt(index);
+        index++;
+        setTimeout(typeText, 35);
+      }
+    }
+    typeText();
+
+    /* Yes logic */
     function sayYes() {
-      const yesBtn = document.querySelector('.yes');
-      yesBtn.textContent = 'Best choice 😍';
-      yesBtn.style.transform = 'scale(1.2)';
       document.getElementById('mainCard').classList.add('hidden');
       document.getElementById('yesCard').classList.remove('hidden');
       createHearts();
+      createConfetti();
     }
 
+    /* No logic */
     let noClicks = 0;
-
-    function moveNo() {
-      const btn = event.target;
+    function moveNo(e) {
+      const btn = e.target;
       noClicks++;
 
       const messages = [
         "Hey! 😳",
-        "Almost! 😂",
-        "Nice try 😜",
-        "You sure about that? 🤭",
-        "Okay this is getting suspicious 😏"
+        "Almost 😂",
+        "NAAAAH 😜",
+        "NAAAAAAAH 🤭",
+        "YOU AINT DOIN THAT 😏"
       ];
 
       btn.textContent = messages[Math.min(noClicks - 1, messages.length - 1)];
-
       btn.style.position = 'absolute';
       btn.style.left = Math.random() * 70 + 'vw';
       btn.style.top = Math.random() * 70 + 'vh';
-
       btn.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+
+      if (noClicks >= 4) {
+        document.getElementById('yesBtn').style.animation = 'fadeIn 0.6s ease';
+        document.getElementById('yesBtn').textContent = 'You know you want to 😍';
+      }
     }
 
+    /* Hearts */
     function createHearts() {
-      const hearts = document.getElementById('hearts');
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 35; i++) {
         const heart = document.createElement('span');
         heart.textContent = '❤️';
         heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-        hearts.appendChild(heart);
+        heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+        heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+        document.getElementById('hearts').appendChild(heart);
       }
     }
+
+    /* Confetti */
+    function createConfetti() {
+      for (let i = 0; i < 40; i++) {
+        const c = document.createElement('span');
+        c.textContent = '✨';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.fontSize = Math.random() * 14 + 10 + 'px';
+        c.style.animationDuration = Math.random() * 3 + 2 + 's';
+        document.getElementById('confetti').appendChild(c);
+      }
+    }
+
+    /* Music */
+    function toggleMusic() {
+      const music = document.getElementById('bgMusic');
+      if (music.paused) music.play(); else music.pause();
+    }
+
+    /* Countdown to Valentine’s */
+    function updateCountdown() {
+      const valentine = new Date(new Date().getFullYear(), 1, 14);
+      const now = new Date();
+      const diff = valentine - now;
+      const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+      document.getElementById('countdown').textContent = `⏳ ${days} day(s) until Valentine’s Day`;
+    }
+    updateCountdown();
   </script>
 
 </body>
