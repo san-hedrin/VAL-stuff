@@ -122,16 +122,35 @@
 
   <script>
     function sayYes() {
+      const yesBtn = document.querySelector('.yes');
+      yesBtn.textContent = 'Best choice 😍';
+      yesBtn.style.transform = 'scale(1.2)';
       document.getElementById('mainCard').classList.add('hidden');
       document.getElementById('yesCard').classList.remove('hidden');
       createHearts();
     }
 
+    let noClicks = 0;
+
     function moveNo() {
       const btn = event.target;
+      noClicks++;
+
+      const messages = [
+        "Hey! 😳",
+        "Almost! 😂",
+        "Nice try 😜",
+        "You sure about that? 🤭",
+        "Okay this is getting suspicious 😏"
+      ];
+
+      btn.textContent = messages[Math.min(noClicks - 1, messages.length - 1)];
+
       btn.style.position = 'absolute';
-      btn.style.left = Math.random() * 80 + 'vw';
-      btn.style.top = Math.random() * 80 + 'vh';
+      btn.style.left = Math.random() * 70 + 'vw';
+      btn.style.top = Math.random() * 70 + 'vh';
+
+      btn.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
     }
 
     function createHearts() {
